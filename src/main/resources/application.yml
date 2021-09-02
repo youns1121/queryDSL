@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/querydsl #ex)jdbc:h2:~/querydsl (최소 한번)
+    username: sa
+    password:
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create # create : 기존 테이블 드랍후 새로 생성
+    #    show-sql: true # 테이블 생성 정보가 console상에 출력됨
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true # sql이 한줄 출력이 아닌 정렬됨
+
+
+logging.level:
+  org.hibernate.SQL: debug
+
