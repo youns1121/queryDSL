@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local #임의 명명
+    active: test #테스트용
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:tcp://localhost/~/querydsl #ex)jdbc:h2:~/querydsl (최소 한번) -> jdbc:h2:tcp://localhost/~/querydsl
