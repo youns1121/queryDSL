@@ -3,39 +3,32 @@ package springboot.querydsl_ysmin.repository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import springboot.querydsl_ysmin.domain.Member;
 import springboot.querydsl_ysmin.domain.Team;
 import springboot.querydsl_ysmin.dto.MemberSearchCondition;
 import springboot.querydsl_ysmin.dto.MemberTeamDto;
 
 import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
-class MemberRepositoryTest {
+class MemberJpaRepositoryTest {
 
     @Autowired
     EntityManager em;
 
     @Autowired
+    MemberJpaRepository memberJpaRepository;
     MemberRepository memberRepository;
 
     @Test
     public void basicTest() throws Exception{
         //given
         Member member = new Member("member1", 10);
-        memberRepository.save(member);
+        memberJpaRepository.save(member);
 
-        List<Member> result = memberRepository.findByUsername("member1");
+        List<Member> result = memberJpaRepository.findByUsername("member1");
         Assertions.assertThat(result).containsExactly(member);
 
         //when
@@ -44,7 +37,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    public void srarchPageSimple() {
+    public void searchTetst() {
         //given
         Team teamA = new Team("teamA"); // 매개변수 teamA에 팀 객체를 생성하여 팀명을 teamA로 생성
         Team teamB = new Team("teamB"); // 매개변수 teamB에 팀 객체를 생성하여 팀명을 teamB로 생성
@@ -63,13 +56,14 @@ class MemberRepositoryTest {
         em.persist(member4);
 
         MemberSearchCondition condition = new MemberSearchCondition();
-        PageRequest pageRequest = PageRequest.of(0, 3); // 페이지가 0부터 3이냐
+        condition.setAgeGoe(35);
+        condition.setAgeLoe(40);
+        condition.setTeamName("teamB");
 
-        Page<MemberTeamDto> result = memberRepository.searchPageSimple(condition, pageRequest);
+        List<MemberTeamDto> result = memberRepository.search(condition);
 
-        Assertions.assertThat(result.getSize()).isEqualTo(3);
-        Assertions.assertThat(result.getContent()).extracting("username").containsExactly("member1","member2","member3");
-
+        // username이 정확하게 "member4" 가 맞냐
+        Assertions.assertThat(result).extracting("username").containsExactly("member4");
 
 
 
